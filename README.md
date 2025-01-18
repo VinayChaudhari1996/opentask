@@ -18,6 +18,9 @@ OpenTask is a modern, intuitive task management application built with React tha
   - Due date and time
   - Visual status indicators
   - Quick edit and delete options
+
+<img src="public\screenshots\s2.png" alt="Create Task" width="100%" />
+
 - **Persistent Storage**: Tasks are stored locally, ensuring your data persists between sessions
 - **Responsive Design**: Works seamlessly across all device sizes
 
