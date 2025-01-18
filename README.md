@@ -2,7 +2,7 @@
 
 > The open-source alternative of OpenAI Chatgpt Tasks.
 
-![OpenTask Demo](public/screenshot/s1.png)
+<img src="public\screenshots\s1.png" alt="OpenTask Demo" width="100%" />
 
 ## 🚀 Overview
 
