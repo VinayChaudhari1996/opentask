@@ -9,6 +9,7 @@ import { FaCircleCheck } from "react-icons/fa6"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
+import CountdownTimer from './CountdownTimer'
 
 function ShowTasks({ taskUpdateTrigger, onEditTask }) {
   const [tasks, setTasks] = useState([])
@@ -87,45 +88,57 @@ function ShowTasks({ taskUpdateTrigger, onEditTask }) {
                   {activeTasks.map((task) => (
                     <div 
                       key={task.id} 
-                      className="w-full border bg-gradient-to-b from-white to-gray-50/50 shadow-none transition-all duration-200 hover:border-gray-400 hover:from-gray-50 hover:to-white group relative overflow-hidden rounded-xl"
+                      className="w-full border bg-white shadow-none transition-all duration-200 hover:border-gray-400 hover:bg-gray-50/80 group relative"
                     >
-                      <div className="p-6 flex items-center justify-between">
-                        <div className="flex-shrink-0 flex items-center gap-4">
-                          <div className="p-2 rounded-full bg-primary/5">
-                            <Clock className="w-5 h-5 text-primary" />
+                      <div className="p-6">
+                        <div className="flex flex-col gap-4">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                              <div className="p-2 rounded-full bg-primary/5">
+                                <Clock className="w-5 h-5 text-primary" />
+                              </div>
+                              <h3 className="text-lg font-medium text-gray-900">{task.name}</h3>
+                            </div>
+                            <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-200">
+                              <motion.button
+                                onClick={() => handleEdit(task)}
+                                className="p-1.5 hover:bg-gray-100 rounded-full transition-colors"
+                                aria-label="Edit task"
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.95 }}
+                              >
+                                <Edit2 className="w-4 h-4 text-gray-600 hover:text-gray-900" />
+                              </motion.button>
+                              <motion.button
+                                onClick={() => deleteTask(task.id)}
+                                className="p-1.5 hover:bg-red-50 rounded-full transition-colors"
+                                aria-label="Delete task"
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.95 }}
+                              >
+                                <Trash2 className="w-4 h-4 text-red-500" />
+                              </motion.button>
+                            </div>
                           </div>
-                          <div className="space-y-1">
-                            <span className="text-base font-medium text-gray-900">{task.name}</span>
-                            <p className="text-sm text-gray-500 max-w-md truncate">
-                              {task.instructions}
-                            </p>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-center gap-4">
-                          <Badge variant="outline" className="text-sm bg-transparent">
-                            {format(new Date(task.date), "MMM d")} • {task.time.hours}:{task.time.minutes} {task.time.period}
-                          </Badge>
                           
-                          <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-200">
-                            <motion.button
-                              onClick={() => handleEdit(task)}
-                              className="p-1.5 hover:bg-gray-100 rounded-full transition-colors"
-                              aria-label="Edit task"
-                              whileHover={{ scale: 1.1 }}
-                              whileTap={{ scale: 0.95 }}
-                            >
-                              <Edit2 className="w-4 h-4 text-gray-600 hover:text-gray-900" />
-                            </motion.button>
-                            <motion.button
-                              onClick={() => deleteTask(task.id)}
-                              className="p-1.5 hover:bg-red-50 rounded-full transition-colors"
-                              aria-label="Delete task"
-                              whileHover={{ scale: 1.1 }}
-                              whileTap={{ scale: 0.95 }}
-                            >
-                              <Trash2 className="w-4 h-4 text-red-500" />
-                            </motion.button>
+                          <p className="text-sm text-gray-600 whitespace-pre-wrap">
+                            {task.instructions}
+                          </p>
+                          
+                          <div className="flex items-center justify-between">
+                            <Badge variant="outline" className="w-fit text-sm bg-transparent">
+                              {format(new Date(task.date), "MMM d")} • {task.time.hours}:{task.time.minutes} {task.time.period}
+                            </Badge>
+                            <CountdownTimer 
+                              targetDate={new Date(task.date).setHours(
+                                task.time.period === 'PM' && task.time.hours !== '12' 
+                                  ? parseInt(task.time.hours) + 12 
+                                  : task.time.period === 'AM' && task.time.hours === '12'
+                                  ? 0
+                                  : parseInt(task.time.hours),
+                                parseInt(task.time.minutes)
+                              )} 
+                            />
                           </div>
                         </div>
                       </div>
@@ -154,35 +167,39 @@ function ShowTasks({ taskUpdateTrigger, onEditTask }) {
                   {completedTasks.map((task) => (
                     <div 
                       key={task.id} 
-                      className="w-full border bg-gradient-to-b from-white to-gray-50/50 shadow-none transition-all duration-200 hover:border-gray-400 hover:from-gray-50 hover:to-white group relative overflow-hidden rounded-xl opacity-80"
+                      className="w-full border bg-white shadow-none transition-all duration-200 hover:border-gray-400 hover:bg-gray-50/80 group relative opacity-80"
                     >
-                      <div className="p-6 flex items-center justify-between">
-                        <div className="flex-shrink-0 flex items-center gap-4">
-                          <div className="p-2 rounded-full bg-primary/5">
-                            <FaCircleCheck className="w-5 h-5 text-green-500" />
+                      <div className="p-6">
+                        <div className="flex flex-col gap-4">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                              <div className="p-2 rounded-full bg-primary/5">
+                                <FaCircleCheck className="w-5 h-5 text-green-500" />
+                              </div>
+                              <h3 className="text-lg font-medium text-gray-900">{task.name}</h3>
+                            </div>
+                            <motion.button
+                              onClick={() => deleteTask(task.id)}
+                              className="p-1.5 hover:bg-red-50 rounded-full transition-colors opacity-0 group-hover:opacity-100"
+                              aria-label="Delete task"
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.95 }}
+                            >
+                              <Trash2 className="w-4 h-4 text-red-500" />
+                            </motion.button>
                           </div>
-                          <div className="space-y-1">
-                            <span className="text-base font-medium text-gray-900">{task.name}</span>
-                            <p className="text-sm text-gray-500 max-w-md truncate">
-                              {task.instructions}
-                            </p>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-center gap-4">
-                          <Badge variant="outline" className="text-sm bg-transparent border-orange-300 text-orange-500">
+                          
+                          <p className="text-sm text-gray-600 whitespace-pre-wrap">
+                            {task.instructions}
+                          </p>
+                          
+                          <Badge 
+                            variant="outline" 
+                            className="w-fit text-sm bg-green-50/50 border-green-200 text-green-700 flex items-center gap-1.5"
+                          >
+                            <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
                             Completed: {format(new Date(task.date), "MMM d")} • {task.time.hours}:{task.time.minutes} {task.time.period}
                           </Badge>
-                          
-                          <motion.button
-                            onClick={() => deleteTask(task.id)}
-                            className="p-1.5 hover:bg-red-50 rounded-full transition-colors opacity-0 group-hover:opacity-100"
-                            aria-label="Delete task"
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.95 }}
-                          >
-                            <Trash2 className="w-4 h-4 text-red-500" />
-                          </motion.button>
                         </div>
                       </div>
                     </div>
